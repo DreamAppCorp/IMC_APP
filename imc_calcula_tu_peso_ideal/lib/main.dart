@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 import 'package:imc_calcula_tu_peso_ideal/pages/imc.dart';
 import 'package:imc_calcula_tu_peso_ideal/preferences/preferences.dart';
 import 'package:imc_calcula_tu_peso_ideal/providers/theme_provider.dart';
