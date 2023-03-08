@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:imc_calcula_tu_peso_ideal/providers/cambiarcolor_provider.dart';
+import 'package:imc_calcula_tu_peso_ideal/providers/edadnombre_provider.dart';
+import 'package:imc_calcula_tu_peso_ideal/providers/peso_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:imc_calcula_tu_peso_ideal/preferences/preferences.dart';
@@ -12,9 +15,20 @@ class IMCPAGE extends StatefulWidget {
 }
 
 class _IMCPAGEState extends State<IMCPAGE> {
-  //final temacontroller = Get.put(TemaProvider());
+  final TextEditingController _edad = TextEditingController();
+  final TextEditingController _peso = TextEditingController();
+  final TextEditingController _altura = TextEditingController();
+
+  Color colormujer = Colors.grey.shade300;
+  Color colorhombre = Colors.grey.shade300;
+  String genero = "";
+
   @override
   Widget build(BuildContext context) {
+    final pesosProvider = Provider.of<PesoProvider>(context);
+    final themacolor = Provider.of<ThemeProvider>(context, listen: false);
+    final cambiarcolorProvider = Provider.of<CambiarColorProvider>(context);
+    final cambiaredadnombre = Provider.of<EdadNombre>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -24,15 +38,43 @@ class _IMCPAGEState extends State<IMCPAGE> {
                   const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
         ),
         actions: [
-          Switch.adaptive(
-              value: Preferences.theme,
-              onChanged: (value) {
-                Preferences.theme = value;
-                final themeP =
-                    Provider.of<ThemeProvider>(context, listen: false);
-                value ? themeP.setColorQ() : themeP.setClaro();
-                setState(() {});
-              }),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.wb_sunny, size: 22),
+                color: !Preferences.theme ? Colors.green : Colors.grey,
+                onPressed: () {
+                  setState(() {
+                    Preferences.theme = false;
+                  });
+                  themacolor.setClaro();
+                },
+                visualDensity: VisualDensity.compact,
+              ),
+              IconButton(
+                icon: const Icon(Icons.nightlight_round_outlined, size: 22),
+                color: Preferences.theme ? Colors.green : Colors.grey,
+                onPressed: () {
+                  setState(() {
+                    Preferences.theme = true;
+                  });
+                  themacolor.setColorQ();
+                },
+                visualDensity: VisualDensity.compact,
+              ),
+            ],
+          )
+          // Switch.adaptive(
+          //     value: Preferences.theme,
+          //     onChanged: (value) {
+          //       Preferences.theme = value;
+          //       final themeP =
+          //           Provider.of<ThemeProvider>(context, listen: false);
+          //       value ? themeP.setColorQ() : themeP.setClaro();
+          //       setState(() {});
+          //     }),
         ],
       ),
       body: Column(
@@ -61,19 +103,79 @@ class _IMCPAGEState extends State<IMCPAGE> {
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold)),
                               ),
-                              TextField()
+                              TextField(
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.quicksand(
+                                    textStyle: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold)),
+                                controller: _edad,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.only(
+                                      top: 15), // Padding para el contenido
+                                ),
+                              )
                             ],
                           ),
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.12,
-                          width: MediaQuery.of(context).size.width * 0.078,
-                          child: Image.asset("assets/hombre.png"),
+                          // height: MediaQuery.of(context).size.height * 0.12,
+                          // width: MediaQuery.of(context).size.width * 0.078,
+
+                          height: 75,
+                          width: 40,
+                          child: InkWell(
+                            child: Image.asset(
+                              'assets/icono_hombre.png',
+                              color: colorhombre,
+                            ),
+                            onTap: () {
+                              setState(() {
+                                colorhombre = Colors.lightBlue.shade300;
+                                colormujer = Colors.grey.shade300;
+                                genero = "hombre";
+                              });
+                            },
+                          ),
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.12,
-                          width: MediaQuery.of(context).size.width * 0.078,
-                          child: Image.asset("assets/mujer.png"),
+                          height: 75,
+                          width: 40,
+                          // height: MediaQuery.of(context).size.height * 0.12,
+                          // width: MediaQuery.of(context).size.width * 0.078,
+
+                          child: InkWell(
+                            child: Image.asset(
+                              'assets/icono_mujer.png',
+                              color: colormujer,
+                            ),
+                            onTap: () {
+                              setState(() {
+                                colormujer = Colors.lightBlue.shade300;
+                                colorhombre = Colors.grey.shade300;
+                                genero = "mujer";
+                              });
+                            },
+                          ),
+
+                          // child: IconButton(
+                          //   icon: const Icon(Icons.woman_sharp, size: 50),
+                          //   color:
+                          //       isButton2Pressed ? Colors.green : Colors.grey,
+                          //   onPressed: () {
+                          //     setState(() {
+                          //       isButton1Pressed = false;
+                          //       isButton2Pressed = true;
+                          //     });
+                          //     themacolor.setColorQ();
+                          //   },
+                          //   alignment: Alignment.bottomLeft,
+                          //   visualDensity: VisualDensity.compact,
+                          //   splashRadius: 24.0,
+                          //   tooltip: 'Femenino',
+                          //   iconSize: 24.0,
+                          // ),
                         ),
                       ],
                     ),
@@ -92,7 +194,18 @@ class _IMCPAGEState extends State<IMCPAGE> {
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold)),
                               ),
-                              TextField()
+                              TextField(
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.quicksand(
+                                    textStyle: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold)),
+                                controller: _altura,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  contentPadding: EdgeInsets.only(top: 15),
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -131,7 +244,17 @@ class _IMCPAGEState extends State<IMCPAGE> {
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold)),
                               ),
-                              TextField()
+                              TextField(
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.quicksand(
+                                      textStyle: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                  controller: _peso,
+                                  keyboardType: TextInputType.number,
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.only(top: 15),
+                                  ))
                             ],
                           ),
                         ),
@@ -176,7 +299,41 @@ class _IMCPAGEState extends State<IMCPAGE> {
                           ],
                         ),
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        if (_peso.text.isEmpty ||
+                            _edad.text.isEmpty ||
+                            _altura.text.isEmpty ||
+                            genero == "") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "Por favor, complete todos los campos.",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else {
+                          // pesosProvider.getCategoriaxIMC(
+                          //     double.parse(_peso.text),
+                          //     double.parse(_altura.text));
+                          pesosProvider.mensajeIMC(
+                              double.parse(_peso.text),
+                              double.parse(_altura.text),
+                              int.parse(_edad.text));
+                          cambiarcolorProvider.cambiamosdecolor2(
+                              pesosProvider.msg, int.parse(_edad.text));
+                          cambiaredadnombre.nombreedad(
+                              genero, int.parse(_edad.text));
+                          // cambiarcolor(pesosProvider.msg);
+                          colormujer = Colors.grey.shade300;
+                          colorhombre = Colors.grey.shade300;
+                          _peso.clear();
+                          _altura.clear();
+                          _edad.clear();
+                          genero = "";
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -186,30 +343,27 @@ class _IMCPAGEState extends State<IMCPAGE> {
                 width: MediaQuery.of(context).size.width * 0.5,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                         begin: Alignment.topRight,
                         end: Alignment.bottomLeft,
                         colors: [
-                          Color.fromARGB(255, 177, 243, 33),
-                          Color.fromARGB(255, 15, 255, 3),
+                          cambiarcolorProvider.colorido2,
+                          cambiarcolorProvider.colorido,
                         ])),
                 child: Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        "NIÑA",
-                        style: TextStyle(
+                        cambiaredadnombre.edadnombre,
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 22,
                             fontWeight: FontWeight.bold),
                       ),
-                      // SizedBox(
-                      //   height: MediaQuery.of(context).size.height * 0.01,
-                      // ),
-                      Text(
+                      const Text(
                         "IMC:",
                         style: TextStyle(
                             color: Colors.white,
@@ -219,29 +373,29 @@ class _IMCPAGEState extends State<IMCPAGE> {
                       Align(
                         alignment: Alignment.center,
                         child: Text(
-                          "15.5",
-                          style: TextStyle(
+                          '${pesosProvider.imc}',
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                      Text(
+                      const Text(
                         "Peso Ideal:",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                       ),
-                      Text(
+                      const Text(
                         "(Referencial)",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 15,
                             fontWeight: FontWeight.bold),
                       ),
-                      Align(
+                      const Align(
                         alignment: Alignment.center,
                         child: Text(
                           "15.5" + "Kg",
@@ -257,7 +411,7 @@ class _IMCPAGEState extends State<IMCPAGE> {
               ),
             ],
           ),
-          Text("AQUI VA LO DE JHON")
+          Text("AQUI VA LO DE JHON"),
         ],
       ),
     );

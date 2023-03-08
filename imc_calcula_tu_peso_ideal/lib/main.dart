@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:imc_calcula_tu_peso_ideal/pages/imc.dart';
 import 'package:imc_calcula_tu_peso_ideal/preferences/preferences.dart';
+import 'package:imc_calcula_tu_peso_ideal/providers/cambiarcolor_provider.dart';
+import 'package:imc_calcula_tu_peso_ideal/providers/edadnombre_provider.dart';
+import 'package:imc_calcula_tu_peso_ideal/providers/peso_provider.dart';
 import 'package:imc_calcula_tu_peso_ideal/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +16,9 @@ void main() async {
     providers: [
       ChangeNotifierProvider(
           create: (_) => ThemeProvider(isDarkMode: Preferences.theme)),
+      ChangeNotifierProvider(create: (_) => PesoProvider()),
+      ChangeNotifierProvider(create: (_) => CambiarColorProvider()),
+      ChangeNotifierProvider(create: (_) => EdadNombre()),
     ],
     child: const MyApp(),
   ));
