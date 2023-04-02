@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:imc_calcula_tu_peso_ideal/providers/cambiarcolor_provider.dart';
 import 'package:imc_calcula_tu_peso_ideal/providers/edadnombre_provider.dart';
 import 'package:imc_calcula_tu_peso_ideal/providers/peso_provider.dart';
+
+import 'package:imc_calcula_tu_peso_ideal/widgets/barra.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:imc_calcula_tu_peso_ideal/preferences/preferences.dart';
@@ -14,14 +16,28 @@ class IMCPAGE extends StatefulWidget {
   State<IMCPAGE> createState() => _IMCPAGEState();
 }
 
-class _IMCPAGEState extends State<IMCPAGE> {
+class _IMCPAGEState extends State<IMCPAGE> with SingleTickerProviderStateMixin {
   final TextEditingController _edad = TextEditingController();
   final TextEditingController _peso = TextEditingController();
   final TextEditingController _altura = TextEditingController();
 
+  late final AnimationController controller;
+  late final Animation movingRight;
+
   Color colormujer = Colors.grey.shade300;
   Color colorhombre = Colors.grey.shade300;
   String genero = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+
+    movingRight = Tween(begin: 0.0, end: 0.0).animate(controller);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +93,7 @@ class _IMCPAGEState extends State<IMCPAGE> {
           //     }),
         ],
       ),
-      body: Column(
+      body: ListView(
         children: [
           Row(
             children: [
@@ -304,6 +320,8 @@ class _IMCPAGEState extends State<IMCPAGE> {
                             _edad.text.isEmpty ||
                             _altura.text.isEmpty ||
                             genero == "") {
+                          //-------------------------controller
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
@@ -325,6 +343,11 @@ class _IMCPAGEState extends State<IMCPAGE> {
                               pesosProvider.msg, int.parse(_edad.text));
                           cambiaredadnombre.nombreedad(
                               genero, int.parse(_edad.text));
+
+                          //---------controller
+
+                          controller.reset();
+                          controller.forward();
                           // cambiarcolor(pesosProvider.msg);
                           colormujer = Colors.grey.shade300;
                           colorhombre = Colors.grey.shade300;
@@ -332,6 +355,7 @@ class _IMCPAGEState extends State<IMCPAGE> {
                           _altura.clear();
                           _edad.clear();
                           genero = "";
+                          //_--------------------------------------------------
                         }
                       },
                     ),
@@ -411,7 +435,165 @@ class _IMCPAGEState extends State<IMCPAGE> {
               ),
             ],
           ),
-          Text("AQUI VA LO DE JHON"),
+          const SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Text(
+              pesosProvider.msg,
+              style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 30),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                  width: MediaQuery.of(context).size.width * 0.90,
+                  height: MediaQuery.of(context).size.height * 0.05,
+                  child: Center(child: BarraColor()),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                child: SizedBox(
+                  height: 30,
+                  child: SizedBox(
+                    height: 50,
+                    child: AnimatedBuilder(
+                      animation: controller,
+                      child: SizedBox(
+                        height: 10,
+                        child: Image.asset(
+                          'assets/arrow.png',
+                          color: Colors.white,
+                        ),
+                      ),
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset: Offset(movingRight.value, 0.0),
+                          child: child,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+          //Barra de color------------------------>
+
+          //Tabla de info---------------------------->
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.90,
+            height: MediaQuery.of(context).size.height * 0.37,
+            child: DataTable(columns: const [
+              DataColumn(
+                  label: Text('Categoria',
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold))),
+              DataColumn(
+                  label: Text('aa',
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold))),
+            ], rows: [
+              DataRow(cells: [
+                DataCell(Text(
+                  'Delgadez muy extrema',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+                DataCell(Text(
+                  '< 16.0',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+              ]),
+              DataRow(cells: [
+                DataCell(Text(
+                  'Delgadez extrema',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+                DataCell(Text(
+                  '16.0 - 16.9',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+              ]),
+              DataRow(cells: [
+                DataCell(Text(
+                  'Delgadez',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+                DataCell(Text(
+                  '17.0 - 18.4',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+              ]),
+              DataRow(cells: [
+                DataCell(Text(
+                  'Normal',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+                DataCell(Text(
+                  '18.5 - 24.9',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+              ]),
+              DataRow(cells: [
+                DataCell(Text(
+                  'Sobrepeso',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+                DataCell(Text(
+                  '25.0 - 29.9',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+              ]),
+              DataRow(cells: [
+                DataCell(Text(
+                  'Obesidad Grado I',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+                DataCell(Text(
+                  '30.0 - 34.9',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+              ]),
+              DataRow(cells: [
+                DataCell(Text(
+                  'Obesidad Grado II',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+                DataCell(Text(
+                  '35.0 - 39.9',
+                  style: GoogleFonts.montserrat(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                )),
+              ]),
+            ]),
+          )
         ],
       ),
     );
