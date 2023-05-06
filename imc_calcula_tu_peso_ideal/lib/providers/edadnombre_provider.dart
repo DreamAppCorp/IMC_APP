@@ -5,12 +5,12 @@ class EdadNombre extends ChangeNotifier {
 
   void nombreedad(String genero, int edad) {
     if (edad >= 18) {
-      edadnombre = "Adulto";
+      edadnombre = "ADULTO";
     } else {
       if (genero == "hombre") {
-        edadnombre = "Niño";
+        edadnombre = "NIÑO";
       } else {
-        edadnombre = "Niña";
+        edadnombre = "NIÑA";
       }
     }
     notifyListeners();

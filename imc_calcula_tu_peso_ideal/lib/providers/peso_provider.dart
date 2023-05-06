@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PesoProvider extends ChangeNotifier {
-  String msg = 'X';
+  String msg = '-';
   double imc = 0;
   double val_move = 0.0;
 
@@ -13,22 +13,22 @@ class PesoProvider extends ChangeNotifier {
     print(resultadoIMC);
     if (edad >= 18) {
       if (resultadoIMC < 16) {
-        msg = 'Delgadez muy extrema';
+        msg = 'DELGADEZ MUY EXTREMA';
       } else if (resultadoIMC >= 17 && resultadoIMC <= 16.9) {
-        msg = 'Delgadez extrema';
+        msg = 'DELGADEZ EXTREMA';
       } else if (resultadoIMC >= 17 && resultadoIMC <= 18.4) {
-        msg = 'Delgadez';
+        msg = 'DELGADEZ';
       } else if (resultadoIMC >= 18.5 && resultadoIMC <= 24.9) {
-        msg = 'Normal';
+        msg = 'PESO NORMAL';
         val_move = 100.00;
       } else if (resultadoIMC >= 25.0 && resultadoIMC <= 29.9) {
-        msg = 'Sobrepeso';
+        msg = 'SOBREPESO';
       } else if (resultadoIMC >= 30.0 && resultadoIMC <= 34.9) {
-        msg = 'Obesidad I';
+        msg = 'OBESIDAD I';
       } else if (resultadoIMC >= 35.0 && resultadoIMC <= 39.9) {
-        msg = 'Obesidad II';
+        msg = 'OBESIDAD II';
       } else {
-        msg = 'Obesidad III';
+        msg = 'OBESIDAD III';
       }
     } else {
       if (resultadoIMC < 11.7) {

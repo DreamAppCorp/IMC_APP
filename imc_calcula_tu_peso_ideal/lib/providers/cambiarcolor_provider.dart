@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CambiarColorProvider extends ChangeNotifier {
-  Color colorido = const Color.fromARGB(255, 15, 255, 3);
-  Color colorido2 = const Color.fromARGB(255, 150, 246, 145);
+  Color colorido = const Color.fromARGB(255, 42, 184, 112);
+  Color colorido2 = const Color.fromARGB(255, 210, 242, 284);
 
 //   void cambiamosdecolor(String mensaje) {
 // //IMC = peso (kg)/ estatura (m2) y,
@@ -71,8 +71,8 @@ class CambiarColorProvider extends ChangeNotifier {
 
           break;
         case 'Normal':
-          colorido = const Color.fromARGB(255, 0, 254, 0);
-          colorido2 = const Color.fromARGB(255, 150, 246, 145);
+          colorido = const Color.fromARGB(255, 42, 184, 112);
+          colorido2 = const Color.fromARGB(255, 210, 242, 284);
 
           break;
         case 'Sobrepeso':
